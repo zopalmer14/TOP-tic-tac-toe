@@ -76,7 +76,7 @@ body {
     height: 100vh;
 }
 
-#title_container {
+#title-container {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -91,14 +91,14 @@ body {
     font-size: 2rem;
 }
 
-#reset_button {
+#reset-button {
     padding: 0.25rem 1rem;
     background-color: var(--white-accent);
     border: 2px solid var(--blue-accent);
     border-radius: 999px;
 }
 
-#reset_button:hover {
+#reset-button:hover {
     color: var(--white-accent);
     background-color: var(--blue-accent);
     transition: 0.5s;
@@ -126,4 +126,64 @@ body {
 .interactable:hover {
     background-color: var(--blue-accent);
     transition: 0.5s;
+}
+
+/* FORM STYLING */
+
+dialog {
+    background-color: whitesmoke;
+    padding: 0px;
+    border: 0px;
+    border-radius: 10px;
+}
+
+#start-game-form {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: stretch;
+
+    width: 10vw;
+    min-height: 25vh;
+    padding: 2rem;
+} 
+
+#start-game-form, #submit-button {
+    font-weight: bold;
+}
+
+#start-game-form .form-row {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+#start-game-form #form-header {
+    align-self: center;
+    font-size: 1.5rem;
+}
+
+#start-game-form input {
+    margin-top: 0.25rem;
+    padding: 0.5rem 0.25rem;
+    border: 1px solid var(--white-accent);
+    border-radius: 5px;
+}
+
+#start-game-form input::placeholder {
+    color: gray;
+    font-size: 13.33px;
+}
+
+#start-game-form input:focus {
+    outline: 0px;
+    border: 1px solid var(--blue-accent);
+}
+
+#start-game-form #submit-button {
+    background-color: var(--blue-accent);
+    border: 0px;
+    border-radius: 10px;
+    
+    padding: 1rem 0;
 }

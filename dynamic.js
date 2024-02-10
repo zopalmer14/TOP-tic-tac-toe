@@ -170,13 +170,11 @@ function renderBoard() {
 
 renderBoard();
 
-// tile selection / interaction
+// TILE SELECTION / INTERACTION
 const tileList = document.querySelectorAll('.board-tile');
 
 // if a tile is clicked by the player . . .
 tileList.forEach((tile) => tile.addEventListener('click', (e) => {
-    console.log('capture event');
-
     // update the game_board with the player's symbol
     const index = e.target.id;
     const row = Math.floor(index / 3);
@@ -191,3 +189,19 @@ tileList.forEach((tile) => tile.addEventListener('click', (e) => {
     
 // only allow the user to click each tile once
 }, {once : true}));
+
+// START GAME LOGIC
+
+// dialog / form
+
+const dialog = document.querySelector("dialog");
+const submit_button = document.querySelector("#submit-button");
+const reset_button = document.querySelector("#reset-button");
+
+reset_button.addEventListener('click', () => {
+    dialog.showModal();
+});
+
+submit_button.addEventListener("click", () => {
+    dialog.close();
+});
