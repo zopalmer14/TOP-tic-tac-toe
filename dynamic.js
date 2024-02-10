@@ -151,6 +151,9 @@ function renderBoard() {
     const board_state = gameController.gameBoard.getBoard();
     const board_grid = document.querySelector('#board-grid')
 
+    // delete the current state / display by removing all children from the grid
+    board_grid.replaceChildren();
+
     // render the board onto the screen
     for (let row = 0; row < 3; row++) {
         for (let col = 0; col < 3; col++) {
@@ -158,9 +161,33 @@ function renderBoard() {
             const board_tile = document.createElement('div');
             board_tile.textContent = board_state[row][col];
             board_tile.classList.add("board-tile");
+            board_tile.classList.add("interactable");
+            board_tile.id = row * 3 + col;
             board_grid.appendChild(board_tile);
         }
     }
 }
 
 renderBoard();
+
+// tile selection / interaction
+const tileList = document.querySelectorAll('.board-tile');
+
+// if a tile is clicked by the player . . .
+tileList.forEach((tile) => tile.addEventListener('click', (e) => {
+    console.log('capture event');
+
+    // update the game_board with the player's symbol
+    const index = e.target.id;
+    const row = Math.floor(index / 3);
+    const col = index % 3;  
+    gameController.gameBoard.updateBoard(row, col, gameController.getActivePlayer());
+
+    // change the tile's textContent to the player's symbol
+    e.target.textContent = gameController.getActivePlayer().getSymbol();
+
+    // remove hover effect to show user they can no longer click the tile
+    e.target.classList.remove("interactable");
+    
+// only allow the user to click each tile once
+}, {once : true}));

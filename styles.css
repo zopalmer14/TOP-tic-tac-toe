@@ -115,9 +115,15 @@ body {
 
 .board-tile {
     background-color: var(--white-accent);
+    color: var(--red-accent);
+    font-size: 6rem;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-.board-tile:hover {
+.interactable:hover {
     background-color: var(--blue-accent);
     transition: 0.5s;
 }
