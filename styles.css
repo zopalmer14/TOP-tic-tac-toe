@@ -103,7 +103,7 @@ body {
     transition: 0.5s;
 }
 
-#game-grid {
+#board-grid {
     display: grid;
     grid-template: repeat(3, minmax(200px, 1fr)) / repeat(3, minmax(200px, 1fr));
 
@@ -112,11 +112,11 @@ body {
     gap: 0.25rem;
 }
 
-.game-tile {
+.board-tile {
     background-color: var(--white-accent);
 }
 
-.game-tile:hover {
+.board-tile:hover {
     background-color: var(--blue-accent);
     transition: 0.5s;
 }

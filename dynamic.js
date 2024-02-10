@@ -1,4 +1,6 @@
 
+// GAME MANAGEMENT AND OBJECT CREATION
+
 const gameController = function gameController() {
     // create a factory function to create player objects
     function createPlayer (name, symbol) {
@@ -134,3 +136,23 @@ const gameController = function gameController() {
 
     return { gameBoard, getActivePlayer, switchTurn, checkVictory, checkFull };
 }();
+
+// REACTIVE UI
+
+function renderBoard() {
+    const board_state = gameController.gameBoard.getBoard();
+    const board_grid = document.querySelector('#board-grid')
+
+    // render the board onto the screen
+    for (let row = 0; row < 3; row++) {
+        for (let col = 0; col < 3; col++) {
+            // create a div, add the appropriate text content and class, and add to the board
+            const board_tile = document.createElement('div');
+            board_tile.textContent = board_state[row][col];
+            board_tile.classList.add("board-tile");
+            board_grid.appendChild(board_tile);
+        }
+    }
+}
+
+renderBoard();
