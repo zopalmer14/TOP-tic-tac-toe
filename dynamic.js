@@ -29,6 +29,14 @@ const gameController = function gameController() {
         ];
 
         const getBoard = () => game_board; 
+
+        const resetBoard = function resetBoard() {
+            for (let row = 0; row < 3; row++) {
+                for (let col = 0; col < 3; col++) {
+                    game_board[row][col] = '';
+                }
+            }
+        }
     
         const updateBoard = function updateBoard(row, col, player) {
             if (game_board[row][col] === '') {
@@ -42,7 +50,7 @@ const gameController = function gameController() {
             console.table(game_board);
         }
     
-        return { getBoard, updateBoard, displayBoard };
+        return { getBoard, resetBoard, updateBoard, displayBoard };
     }();
 
     // create a function to check whether a player has won 
