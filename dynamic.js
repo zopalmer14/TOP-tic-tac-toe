@@ -16,7 +16,7 @@ const gameController = function gameController() {
     // holds the index of the active player
     let active_player_index = 0;
     const getActivePlayer = () => players[active_player_index];
-    const switchTurn = () => (active_player_index === 0) ? 1 : 0; 
+    const switchTurn = () => (active_player_index === 0) ? active_player_index = 1 : active_player_index = 0; 
 
     // create an IIFE for the game board to enable interaction
     const gameBoard = function gameBoard () {
@@ -26,7 +26,7 @@ const gameController = function gameController() {
             ['', '', '']
         ];
 
-        const getBoard = () => game_board;
+        const getBoard = () => game_board; 
     
         const updateBoard = function updateBoard(row, col, player) {
             if (game_board[row][col] === '') {
@@ -61,7 +61,7 @@ const gameController = function gameController() {
             }
             if (num_matches === 3) {
                 victory_status = true;
-                break;
+                return victory_status;
             } 
         }
 
@@ -72,6 +72,7 @@ const gameController = function gameController() {
         // if any row returns true then the player has won
         if (triple_match.some(Boolean)) {
             victory_status = true;
+            return victory_status;
         }
 
         // check diagonal win possibilities
@@ -89,6 +90,7 @@ const gameController = function gameController() {
         // check number of matches
         if (num_matches === 3) {
             victory_status = true;
+            return victory_status;
         } 
 
         // right to left
@@ -106,10 +108,29 @@ const gameController = function gameController() {
         // check number of matches
         if (num_matches === 3) {
             victory_status = true;
+            return victory_status;
         } 
 
         return victory_status;
     }
 
-    return { gameBoard, getActivePlayer, switchTurn, checkVictory };
+    // check whether the board is full
+    // if neither player has won and the board is full it is a tie
+    const checkFull = function checkFull() {
+        const board_state = gameBoard.getBoard();
+
+        // we use map to test each row individually for whether any value equals the empty string (open spot)
+        const empty_check = (val) => val === '';
+        const spot_available = board_state.map((row) => row.some(empty_check));
+
+        // if any row returns true then the board is not full
+        if (spot_available.some(Boolean)) {
+            return false;
+        }
+
+        // otherwise the board is full
+        return true;
+    }
+
+    return { gameBoard, getActivePlayer, switchTurn, checkVictory, checkFull };
 }();
