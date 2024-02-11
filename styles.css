@@ -104,6 +104,10 @@ body {
     transition: 0.5s;
 }
 
+#reset-button:focus {
+   outline: none;
+}
+
 #board-grid {
     display: grid;
     grid-template: repeat(3, minmax(200px, 1fr)) / repeat(3, minmax(200px, 1fr));
@@ -115,7 +119,7 @@ body {
 
 .board-tile {
     background-color: var(--white-accent);
-    color: var(--red-accent);
+    color: black;
     font-size: 6rem;
 
     display: flex;

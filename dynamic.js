@@ -145,63 +145,94 @@ const gameController = function gameController() {
     return { gameBoard, getActivePlayer, switchTurn, checkVictory, checkFull };
 }();
 
-// REACTIVE UI
+// DOM MANIPULATION
 
-function renderBoard() {
-    const board_state = gameController.gameBoard.getBoard();
-    const board_grid = document.querySelector('#board-grid')
-
-    // delete the current state / display by removing all children from the grid
-    board_grid.replaceChildren();
-
-    // render the board onto the screen
-    for (let row = 0; row < 3; row++) {
-        for (let col = 0; col < 3; col++) {
-            // create a div, add the appropriate text content and class, and add to the board
-            const board_tile = document.createElement('div');
-            board_tile.textContent = board_state[row][col];
-            board_tile.classList.add("board-tile");
-            board_tile.classList.add("interactable");
-            board_tile.id = row * 3 + col;
-            board_grid.appendChild(board_tile);
+const DOMController = function DOMController() {
+    // RENDER BOARD TO SCREEEN
+    const renderBoard = function renderBoard(board_state) {
+        const board_grid = document.querySelector('#board-grid')
+    
+        // delete the current state / display by removing all children from the grid
+        board_grid.replaceChildren();
+    
+        // render the board onto the screen
+        for (let row = 0; row < 3; row++) {
+            for (let col = 0; col < 3; col++) {
+                // create a div, add the appropriate text content and class, and add to the board
+                const board_tile = document.createElement('div');
+                board_tile.textContent = board_state[row][col];
+                board_tile.classList.add("board-tile");
+                board_tile.classList.add("interactable");
+                board_tile.id = row * 3 + col;
+                board_grid.appendChild(board_tile);
+            }
         }
     }
-}
 
-renderBoard();
+    const processStartForm = function processStartForm() {
+        // START GAME LOGIC
+        const dialog = document.querySelector("dialog");
+        const submit_button = document.querySelector("#submit-button");
+        const reset_button = document.querySelector("#reset-button");
 
-// TILE SELECTION / INTERACTION
-const tileList = document.querySelectorAll('.board-tile');
+        reset_button.addEventListener('click', () => {
+            dialog.showModal();
+        });
 
-// if a tile is clicked by the player . . .
-tileList.forEach((tile) => tile.addEventListener('click', (e) => {
-    // update the game_board with the player's symbol
-    const index = e.target.id;
-    const row = Math.floor(index / 3);
-    const col = index % 3;  
-    gameController.gameBoard.updateBoard(row, col, gameController.getActivePlayer());
+        submit_button.addEventListener("click", () => {
+            dialog.close();
+        });
+    }
 
-    // change the tile's textContent to the player's symbol
-    e.target.textContent = gameController.getActivePlayer().getSymbol();
+    return { renderBoard, processStartForm };
+}();
 
-    // remove hover effect to show user they can no longer click the tile
-    e.target.classList.remove("interactable");
-    
-// only allow the user to click each tile once
-}, {once : true}));
+// GAME INTERFACE BETWEEN DOM AND GAME LOGIC
 
-// START GAME LOGIC
+const gameInterface = function gameInterface() {
+    // GAME SETUP
+    const setupGame = function setupGame() {
+        const board_state = gameController.gameBoard.getBoard();
+        DOMController.renderBoard(board_state);
+        const form_info = DOMController.processStartForm();
+        
+        // create players with user input from start game form
+    }
 
-// dialog / form
+    // GAME LOGIC / INTERACTION
+    const makeBoardInteractable = function makeBoardInteractable() {
+        const tiles = document.querySelectorAll('.board-tile');
 
-const dialog = document.querySelector("dialog");
-const submit_button = document.querySelector("#submit-button");
-const reset_button = document.querySelector("#reset-button");
+        // if a tile is clicked by the player . . .
+        tiles.forEach((tile) => tile.addEventListener('click', (e) => {
+            // update the game_board with the player's symbol
+            const index = e.target.id;
+            const row = Math.floor(index / 3);
+            const col = index % 3;  
+            gameController.gameBoard.updateBoard(row, col, gameController.getActivePlayer());
 
-reset_button.addEventListener('click', () => {
-    dialog.showModal();
-});
+            // change the tile's textContent to the player's symbol
+            e.target.textContent = gameController.getActivePlayer().getSymbol();
 
-submit_button.addEventListener("click", () => {
-    dialog.close();
-});
+            // remove hover effect to show user they can no longer click the tile
+            e.target.classList.remove("interactable");
+
+            // check for victory
+            if (gameController.checkVictory()) {
+
+            }
+
+            // check for tie
+            if (gameController.checkFull()) {
+                
+            }
+
+            // switch the active player
+            gameController.switchTurn();
+            
+        // only allow the user to click each tile once
+        }, {once : true}));
+    }
+
+    return { setupGame, makeBoardInteractable }
+}();
