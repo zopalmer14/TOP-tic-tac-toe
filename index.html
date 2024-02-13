@@ -8,35 +8,33 @@
     <script src="dynamic.js" defer></script>
 </head>
 <body>
-    <div id="screen-container">
-        <div id="title-container">
-            <div id="title">Etch-A-Sketch</div>
-            <button id="reset-button">Begin / Restart Game</button>
-        </div>
-
-        <div id="board-grid">
-
-        </div>
-
-        <dialog>
-            <form id="start-game-form">
-                <div class="form-row" id="form-header">Start Game</div>
-
-                <div class="form-row">
-                    <label for="player-one">Player 'X'</label>
-                    <input type="text" placeholder="Name" name="player-one" id="player-one"/>
-                </div>
-
-                <div class="form-row">
-                    <label for="player-one">Player 'O'</label>
-                    <input type="text" placeholder="Name" name="player-two" id="player-two"/>
-                </div>
-
-                <div class="form-row">
-                    <button id="submit-button">Submit</button>
-                </div>
-            </form>
-        </dialog>
+    <div id="page-header">
+        <div id="title">Etch-A-Sketch</div>
+        <button id="reset-button">Begin / Restart Game</button>
     </div>
+
+    <div id="board-grid">
+
+    </div>
+
+    <dialog>
+        <form method="dialog" id="start-game-form" name="start-game-form">
+            <div class="form-row" id="form-header">Start Game</div>
+
+            <div class="form-row">
+                <label for="player-one">Player 'X'</label>
+                <input type="text" placeholder="Name" name="playerOne" id="player-one"/>
+            </div>
+
+            <div class="form-row">
+                <label for="player-one">Player 'O'</label>
+                <input type="text" placeholder="Name" name="playerTwo" id="player-two"/>
+            </div>
+
+            <div class="form-row">
+                <button id="submit-button">Submit</button>
+            </div>
+        </form>
+    </dialog>
 </body>
 </html>

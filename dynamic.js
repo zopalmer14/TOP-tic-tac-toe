@@ -2,6 +2,10 @@
 // GAME MANAGEMENT AND OBJECT CREATION
 
 const gameController = function gameController() {
+    // create an array to hold player objects
+    const players = [];
+    const MAX_PLAYERS = 2;
+
     // create a factory function to create player objects
     function createPlayer (name, symbol) {
         const getName = () => name; 
@@ -9,10 +13,15 @@ const gameController = function gameController() {
         return { getName, getSymbol };
     }
 
-    // create two players to play the game using the factory function
-    const player_1 = createPlayer('Zach', 'X');
-    const player_2 = createPlayer('Emily', 'O');
-    const players = [player_1, player_2];
+    // visible function that adds players to the player array
+    const addPlayer = function addPlayer(name, symbol) {
+        if (players.length < MAX_PLAYERS) {
+            const new_player = createPlayer(name, symbol);
+            players.push(new_player);    
+        } else {
+            console.log("There is a maximum of two players allowed");
+        }
+    }
 
     // create an active_player variable to facilitate the turn logic
     // holds the index of the active player
@@ -142,7 +151,7 @@ const gameController = function gameController() {
         return true;
     }
 
-    return { gameBoard, getActivePlayer, switchTurn, checkVictory, checkFull };
+    return { addPlayer, gameBoard, getActivePlayer, switchTurn, checkVictory, checkFull };
 }();
 
 // DOM MANIPULATION
@@ -169,38 +178,47 @@ const DOMController = function DOMController() {
         }
     }
 
-    const processStartForm = function processStartForm() {
-        // START GAME LOGIC
-        const dialog = document.querySelector("dialog");
-        const submit_button = document.querySelector("#submit-button");
-        const reset_button = document.querySelector("#reset-button");
-
-        reset_button.addEventListener('click', () => {
-            dialog.showModal();
-        });
-
-        submit_button.addEventListener("click", () => {
-            dialog.close();
-        });
-    }
-
-    return { renderBoard, processStartForm };
+    return { renderBoard };
 }();
 
 // GAME INTERFACE BETWEEN DOM AND GAME LOGIC
 
 const gameInterface = function gameInterface() {
+    // function that handles the appearance, submission, and processing of the start_form
+    const awaitStart = function awaitStart() {
+        // DOM references
+        const dialog = document.querySelector("dialog");
+        const reset_button = document.querySelector("#reset-button");
+        const start_game_form = document.querySelector('[name="start-game-form"]');
+
+        // activate the modal dialog form when the user clicks the button
+        reset_button.addEventListener('click', () => {
+            dialog.showModal();
+        });
+
+        // process the form contents when the user clicks the submit button 
+        start_game_form.addEventListener('submit', (event) => {
+            // create two different player objects with the info from the form 
+            gameController.addPlayer(event.target.playerOne.value, 'X');
+            gameController.addPlayer(event.target.playerTwo.value, 'O');
+
+            // start the game
+            startGame();
+        });
+    }
+
     // GAME SETUP
-    const setupGame = function setupGame() {
+    function startGame() {
+        // grab the game state and render the board
         const board_state = gameController.gameBoard.getBoard();
         DOMController.renderBoard(board_state);
-        const form_info = DOMController.processStartForm();
-        
-        // create players with user input from start game form
+
+        // make the board dynamic / responsive
+        makeBoardInteractable();
     }
 
     // GAME LOGIC / INTERACTION
-    const makeBoardInteractable = function makeBoardInteractable() {
+    function makeBoardInteractable() {
         const tiles = document.querySelectorAll('.board-tile');
 
         // if a tile is clicked by the player . . .
@@ -218,13 +236,14 @@ const gameInterface = function gameInterface() {
             e.target.classList.remove("interactable");
 
             // check for victory
-            if (gameController.checkVictory()) {
-
+            const active_player = gameController.getActivePlayer();
+            if (gameController.checkVictory(active_player)) {
+                console.log(`Player ${active_player.getSymbol()} - that is ${active_player.getName()}, wins!`);
             }
 
             // check for tie
             if (gameController.checkFull()) {
-                
+                console.log("It's a tie!");
             }
 
             // switch the active player
@@ -234,5 +253,7 @@ const gameInterface = function gameInterface() {
         }, {once : true}));
     }
 
-    return { setupGame, makeBoardInteractable }
+    return { awaitStart }
 }();
+
+gameInterface.awaitStart();

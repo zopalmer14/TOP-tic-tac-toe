@@ -64,19 +64,15 @@ table {
 body {
     font-size: 16px;
     font-family: Garamond, sans-serif;
-}
 
-#screen-container {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-
-    width: 100vw;
     height: 100vh;
 }
 
-#title-container {
+#page-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -85,26 +81,26 @@ body {
     margin-bottom: 1rem;
 }
 
-#title {
+#page-header #title {
     color: var(--blue-accent);
     font-weight: bold;
     font-size: 2rem;
 }
 
-#reset-button {
+#page-header #reset-button {
     padding: 0.25rem 1rem;
     background-color: var(--white-accent);
     border: 2px solid var(--blue-accent);
     border-radius: 999px;
 }
 
-#reset-button:hover {
+#page-header #reset-button:hover {
     color: var(--white-accent);
     background-color: var(--blue-accent);
     transition: 0.5s;
 }
 
-#reset-button:focus {
+#page-header #reset-button:focus {
    outline: none;
 }
 
@@ -117,7 +113,7 @@ body {
     gap: 0.25rem;
 }
 
-.board-tile {
+#board-grid .board-tile {
     background-color: var(--white-accent);
     color: black;
     font-size: 6rem;
@@ -127,7 +123,7 @@ body {
     align-items: center;
 }
 
-.interactable:hover {
+#board-grid .interactable:hover {
     background-color: var(--blue-accent);
     transition: 0.5s;
 }
