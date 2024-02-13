@@ -176,7 +176,6 @@ const DOMController = function DOMController() {
                 const board_tile = document.createElement('div');
                 board_tile.textContent = board_state[row][col];
                 board_tile.classList.add("board-tile");
-                board_tile.classList.add("interactable");
                 board_tile.id = row * 3 + col;
                 board_grid.appendChild(board_tile);
             }
@@ -217,6 +216,10 @@ const gameInterface = function gameInterface() {
         const dialog = document.querySelector("dialog");
         const start_button = document.querySelector("#start-button");
         const start_game_form = document.querySelector('[name="start-game-form"]');
+
+        // grab the game state and render the board
+        const board_state = gameController.gameBoard.getBoard();
+        DOMController.renderBoard(board_state);
 
         // activate the modal dialog form when the user clicks the button
         start_button.addEventListener('click', () => {
@@ -260,8 +263,11 @@ const gameInterface = function gameInterface() {
     function makeBoardInteractable() {
         const tiles = document.querySelectorAll('.board-tile');
 
-        // if a tile is clicked by the player . . .
-        tiles.forEach((tile) => tile.addEventListener('click', handleTileClick, {once : true}));
+        // add a 'click' event handler and a :hover effect to each tile
+        tiles.forEach((tile) => {
+            tile.addEventListener('click', handleTileClick, {once : true})
+            tile.classList.add("interactable");
+        });
     }
 
     function handleTileClick(e) {
