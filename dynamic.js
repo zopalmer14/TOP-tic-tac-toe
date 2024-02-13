@@ -196,7 +196,16 @@ const DOMController = function DOMController() {
         game_display.textContent = message;
     }
 
-    return { renderBoard, showDisplay, updateDisplay };
+    // mark the tile to indicate it has been selected
+    const markTile = function markTile(tile, symbol) {
+        // change the tile's textContent to the player's symbol
+        tile.textContent = symbol;
+
+        // remove hover effect to show user they can no longer click the tile
+        tile.classList.remove("interactable");
+    }
+
+    return { renderBoard, showDisplay, updateDisplay, markTile };
 }();
 
 // GAME INTERFACE BETWEEN DOM AND GAME LOGIC
@@ -206,11 +215,11 @@ const gameInterface = function gameInterface() {
     const awaitStart = function awaitStart() {
         // DOM references
         const dialog = document.querySelector("dialog");
-        const reset_button = document.querySelector("#start-button");
+        const start_button = document.querySelector("#start-button");
         const start_game_form = document.querySelector('[name="start-game-form"]');
 
         // activate the modal dialog form when the user clicks the button
-        reset_button.addEventListener('click', () => {
+        start_button.addEventListener('click', () => {
             dialog.showModal();
         });
 
@@ -262,29 +271,32 @@ const gameInterface = function gameInterface() {
         const col = index % 3;  
         gameController.gameBoard.updateBoard(row, col, gameController.getActivePlayer());
 
-        // change the tile's textContent to the player's symbol
-        e.target.textContent = gameController.getActivePlayer().getSymbol();
-
-        // remove hover effect to show user they can no longer click the tile
-        e.target.classList.remove("interactable");
-
-        // check for victory
+        // update the DOM representation to mirror the back-end
+        DOMController.markTile(e.target, gameController.getActivePlayer().getSymbol());
+        
+        // check for a victory or tie, then switch to the next turn if not so  
         const active_player = gameController.getActivePlayer();
         if (gameController.gameBoard.checkVictory(active_player)) {
-            console.log(`Player ${active_player.getSymbol()} - that is ${active_player.getName()}, wins!`);
+            // update the display then remove the remaining eventListeners to disable the game
+            DOMController.updateDisplay(`Player ${active_player.getSymbol()} - That is ${active_player.getName()}, Wins!`);
             handleVictory();
-        }
-
-        // switch the active player
-        gameController.switchTurn();
-
-        // update the display to mirror the change in turn
-        displayTurnMessage();
-
-        // check for tie
-        if (gameController.gameBoard.checkFull()) {
+        } else if (gameController.gameBoard.checkFull()) {
+            // update the display to indicate it is a tie
             DOMController.updateDisplay("It's a Tie!");
+        } else {
+            // if there was neither a victory or tie . . . 
+            gameController.switchTurn();
+            displayTurnMessage();
         }
+    }
+
+    // remove the eventListeners and :hover effect from the tiles when a player wins
+    function handleVictory() {
+        const tiles = document.querySelectorAll('.board-tile');
+        tiles.forEach((tile) => {
+            tile.removeEventListener('click', handleTileClick);
+            tile.classList.remove("interactable");
+        });
     }
 
     return { awaitStart }
