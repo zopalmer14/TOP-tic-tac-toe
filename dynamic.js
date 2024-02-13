@@ -58,100 +58,105 @@ const gameController = function gameController() {
         const displayBoard = () => {
             console.table(game_board);
         }
-    
-        return { getBoard, resetBoard, updateBoard, displayBoard };
-    }();
 
-    // create a function to check whether a player has won 
-    // returns true if so, false otherwise
-    const checkVictory = function checkVictory(player) {
-        const board_state = gameBoard.getBoard();
-        let victory_status = false;
-        
-        // check vertical win possibilities
-        for (let col = 0; col < 3; col++) {
+        // create a function to check whether a player has won 
+        // returns true if so, false otherwise
+        const checkVictory = function checkVictory(player) {
+            let victory_status = false;
+            
+            // check vertical win possibilities
+            for (let col = 0; col < 3; col++) {
+                let num_matches = 0;
+                for (let row = 0; row < 3; row++) {
+                    if (game_board[row][col] === player.getSymbol()) {
+                        num_matches++;
+                    } else {
+                        break;
+                    }
+                }
+                if (num_matches === 3) {
+                    victory_status = true;
+                    return victory_status;
+                } 
+            }
+
+            // check horizontal win possibilities
+            // we use map to test each row individually for whether every value in it equals the player's symbol
+            const symbol_check = (val) => val === player.getSymbol();
+            const triple_match = game_board.map((row) => row.every(symbol_check));
+            // if any row returns true then the player has won
+            if (triple_match.some(Boolean)) {
+                victory_status = true;
+                return victory_status;
+            }
+
+            // check diagonal win possibilities
+            // left to right
             let num_matches = 0;
             for (let row = 0; row < 3; row++) {
-                if (board_state[row][col] === player.getSymbol()) {
+                let col = row;
+                
+                if (game_board[row][col] === player.getSymbol()) {
                     num_matches++;
                 } else {
                     break;
                 }
             }
+            // check number of matches
             if (num_matches === 3) {
                 victory_status = true;
                 return victory_status;
             } 
-        }
 
-        // check horizontal win possibilities
-        // we use map to test each row individually for whether every value in it equals the player's symbol
-        const symbol_check = (val) => val === player.getSymbol();
-        const triple_match = board_state.map((row) => row.every(symbol_check));
-        // if any row returns true then the player has won
-        if (triple_match.some(Boolean)) {
-            victory_status = true;
-            return victory_status;
-        }
-
-        // check diagonal win possibilities
-        // left to right
-        let num_matches = 0;
-        for (let row = 0; row < 3; row++) {
-            let col = row;
-            
-            if (board_state[row][col] === player.getSymbol()) {
-                num_matches++;
-            } else {
-                break;
+            // right to left
+            // reset the number of matches 
+            num_matches = 0;
+            for (let row = 0; row < 3; row++) {
+                let col = 2 - row;
+                
+                if (game_board[row][col] === player.getSymbol()) {
+                    num_matches++;
+                } else {
+                    break;
+                }
             }
-        }
-        // check number of matches
-        if (num_matches === 3) {
-            victory_status = true;
-            return victory_status;
-        } 
+            // check number of matches
+            if (num_matches === 3) {
+                victory_status = true;
+                return victory_status;
+            } 
 
-        // right to left
-        // reset the number of matches 
-        num_matches = 0;
-        for (let row = 0; row < 3; row++) {
-            let col = 2 - row;
-            
-            if (board_state[row][col] === player.getSymbol()) {
-                num_matches++;
-            } else {
-                break;
+            return victory_status;
+        }
+
+        // check whether the board is full
+        // if neither player has won and the board is full it is a tie
+        const checkFull = function checkFull() {
+            // we use map to test each row individually for whether any value equals the empty string (open spot)
+            const empty_check = (val) => val === '';
+            const spot_available = game_board.map((row) => row.some(empty_check));
+
+            // if any row returns true then the board is not full
+            if (spot_available.some(Boolean)) {
+                return false;
             }
+
+            // otherwise the board is full
+            return true;
         }
-        // check number of matches
-        if (num_matches === 3) {
-            victory_status = true;
-            return victory_status;
-        } 
+    
+        return { getBoard, resetBoard, updateBoard, displayBoard, checkVictory, checkFull };
+    }();
 
-        return victory_status;
-    }
+    // reset the game state 
+    const resetGame = function resetGame() {
+        // clear the board and player arrays;
+        gameBoard.resetBoard();
+        players.length = 0;
+        active_player_index = 0;
+    };
 
-    // check whether the board is full
-    // if neither player has won and the board is full it is a tie
-    const checkFull = function checkFull() {
-        const board_state = gameBoard.getBoard();
-
-        // we use map to test each row individually for whether any value equals the empty string (open spot)
-        const empty_check = (val) => val === '';
-        const spot_available = board_state.map((row) => row.some(empty_check));
-
-        // if any row returns true then the board is not full
-        if (spot_available.some(Boolean)) {
-            return false;
-        }
-
-        // otherwise the board is full
-        return true;
-    }
-
-    return { addPlayer, gameBoard, getActivePlayer, switchTurn, checkVictory, checkFull };
+    return { addPlayer, gameBoard, getActivePlayer, switchTurn, resetGame };
 }();
 
 // DOM MANIPULATION
@@ -178,7 +183,20 @@ const DOMController = function DOMController() {
         }
     }
 
-    return { renderBoard };
+    // GAME DISPLAY MANIPULATION
+    const game_display = document.querySelector('#game-display');
+
+    // make the display visible
+    const showDisplay = function toggleDisplay() {
+        game_display.classList.remove('hidden');
+    }
+
+    // update the game display 
+    const updateDisplay = function updateDisplay(message) {
+        game_display.textContent = message;
+    }
+
+    return { renderBoard, showDisplay, updateDisplay };
 }();
 
 // GAME INTERFACE BETWEEN DOM AND GAME LOGIC
@@ -188,7 +206,7 @@ const gameInterface = function gameInterface() {
     const awaitStart = function awaitStart() {
         // DOM references
         const dialog = document.querySelector("dialog");
-        const reset_button = document.querySelector("#reset-button");
+        const reset_button = document.querySelector("#start-button");
         const start_game_form = document.querySelector('[name="start-game-form"]');
 
         // activate the modal dialog form when the user clicks the button
@@ -198,6 +216,9 @@ const gameInterface = function gameInterface() {
 
         // process the form contents when the user clicks the submit button 
         start_game_form.addEventListener('submit', (event) => {
+            // reset the game state in case we are restarting
+            gameController.resetGame();
+
             // create two different player objects with the info from the form 
             gameController.addPlayer(event.target.playerOne.value, 'X');
             gameController.addPlayer(event.target.playerTwo.value, 'O');
@@ -212,9 +233,18 @@ const gameInterface = function gameInterface() {
         // grab the game state and render the board
         const board_state = gameController.gameBoard.getBoard();
         DOMController.renderBoard(board_state);
-
+        
         // make the board dynamic / responsive
         makeBoardInteractable();
+
+        // update the display to indicate which player's turn it is and remove it's hidden class
+        displayTurnMessage();
+        DOMController.showDisplay();
+    }
+
+    function displayTurnMessage() {
+        const message = `Player ${gameController.getActivePlayer().getSymbol()} - ${gameController.getActivePlayer().getName()}'s Turn`
+        DOMController.updateDisplay(message);
     }
 
     // GAME LOGIC / INTERACTION
@@ -222,35 +252,39 @@ const gameInterface = function gameInterface() {
         const tiles = document.querySelectorAll('.board-tile');
 
         // if a tile is clicked by the player . . .
-        tiles.forEach((tile) => tile.addEventListener('click', (e) => {
-            // update the game_board with the player's symbol
-            const index = e.target.id;
-            const row = Math.floor(index / 3);
-            const col = index % 3;  
-            gameController.gameBoard.updateBoard(row, col, gameController.getActivePlayer());
+        tiles.forEach((tile) => tile.addEventListener('click', handleTileClick, {once : true}));
+    }
 
-            // change the tile's textContent to the player's symbol
-            e.target.textContent = gameController.getActivePlayer().getSymbol();
+    function handleTileClick(e) {
+        // update the game_board with the player's symbol
+        const index = e.target.id;
+        const row = Math.floor(index / 3);
+        const col = index % 3;  
+        gameController.gameBoard.updateBoard(row, col, gameController.getActivePlayer());
 
-            // remove hover effect to show user they can no longer click the tile
-            e.target.classList.remove("interactable");
+        // change the tile's textContent to the player's symbol
+        e.target.textContent = gameController.getActivePlayer().getSymbol();
 
-            // check for victory
-            const active_player = gameController.getActivePlayer();
-            if (gameController.checkVictory(active_player)) {
-                console.log(`Player ${active_player.getSymbol()} - that is ${active_player.getName()}, wins!`);
-            }
+        // remove hover effect to show user they can no longer click the tile
+        e.target.classList.remove("interactable");
 
-            // check for tie
-            if (gameController.checkFull()) {
-                console.log("It's a tie!");
-            }
+        // check for victory
+        const active_player = gameController.getActivePlayer();
+        if (gameController.gameBoard.checkVictory(active_player)) {
+            console.log(`Player ${active_player.getSymbol()} - that is ${active_player.getName()}, wins!`);
+            handleVictory();
+        }
 
-            // switch the active player
-            gameController.switchTurn();
-            
-        // only allow the user to click each tile once
-        }, {once : true}));
+        // switch the active player
+        gameController.switchTurn();
+
+        // update the display to mirror the change in turn
+        displayTurnMessage();
+
+        // check for tie
+        if (gameController.gameBoard.checkFull()) {
+            DOMController.updateDisplay("It's a Tie!");
+        }
     }
 
     return { awaitStart }

@@ -56,7 +56,6 @@ table {
     --white-accent: white;
     --gray-accent: gray;
     --blue-accent: #318CE7;
-    --red-accent: #D80000;
 }
 
 /* Element Styling */
@@ -69,44 +68,27 @@ body {
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    gap: 2rem;
     height: 100vh;
 }
 
 #page-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-
-    width: 60vh;
-    margin-bottom: 1rem;
-}
-
-#page-header #title {
     color: var(--blue-accent);
     font-weight: bold;
-    font-size: 2rem;
+    font-size: 4rem;
 }
 
-#page-header #reset-button {
-    padding: 0.25rem 1rem;
-    background-color: var(--white-accent);
-    border: 2px solid var(--blue-accent);
-    border-radius: 999px;
+#game-display {
+    font-size: 1.5rem;
 }
 
-#page-header #reset-button:hover {
-    color: var(--white-accent);
-    background-color: var(--blue-accent);
-    transition: 0.5s;
-}
-
-#page-header #reset-button:focus {
-   outline: none;
+.hidden {
+    display: none;
 }
 
 #board-grid {
     display: grid;
-    grid-template: repeat(3, minmax(200px, 1fr)) / repeat(3, minmax(200px, 1fr));
+    grid-template: repeat(3, minmax(150px, 1fr)) / repeat(3, minmax(150px, 1fr));
 
     background-color: var(--gray-accent);
     padding: 0.25rem;
@@ -128,7 +110,24 @@ body {
     transition: 0.5s;
 }
 
-/* FORM STYLING */
+#start-button {
+    padding: 1rem 3rem;
+    background-color: var(--white-accent);
+    border: 2px solid var(--blue-accent);
+    border-radius: 10px;
+}
+
+#start-button:hover {
+    color: var(--white-accent);
+    background-color: var(--blue-accent);
+    transition: 0.5s;
+}
+
+#start-button:focus {
+   outline: none;
+}
+
+/* DIALOG / FORM STYLING */
 
 dialog {
     background-color: whitesmoke;
@@ -175,6 +174,16 @@ dialog {
     font-size: 13.33px;
 }
 
+#start-game-form input:invalid {
+    outline: 0px;
+    border: 1px solid red;
+}
+
+#start-game-form input:valid {
+    outline: 0px;
+    border: 1px solid green;
+}
+
 #start-game-form input:focus {
     outline: 0px;
     border: 1px solid var(--blue-accent);
@@ -184,6 +193,9 @@ dialog {
     background-color: var(--blue-accent);
     border: 0px;
     border-radius: 10px;
-    
     padding: 1rem 0;
+}
+
+#start-game-form #submit-button:focus {
+    outline: 0px;
 }

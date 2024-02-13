@@ -8,14 +8,15 @@
     <script src="dynamic.js" defer></script>
 </head>
 <body>
-    <div id="page-header">
-        <div id="title">Etch-A-Sketch</div>
-        <button id="reset-button">Begin / Restart Game</button>
-    </div>
+    <h1 id="page-header">Tic-Tac-Toe</h1>
+
+    <div id="game-display" class="hidden"></div>
 
     <div id="board-grid">
 
     </div>
+
+    <button id="start-button">Start / Restart</button>
 
     <dialog>
         <form method="dialog" id="start-game-form" name="start-game-form">
@@ -23,12 +24,12 @@
 
             <div class="form-row">
                 <label for="player-one">Player 'X'</label>
-                <input type="text" placeholder="Name" name="playerOne" id="player-one"/>
+                <input required type="text" placeholder="Name" name="playerOne" id="player-one"/>
             </div>
 
             <div class="form-row">
-                <label for="player-one">Player 'O'</label>
-                <input type="text" placeholder="Name" name="playerTwo" id="player-two"/>
+                <label for="player-two">Player 'O'</label>
+                <input required type="text" placeholder="Name" name="playerTwo" id="player-two"/>
             </div>
 
             <div class="form-row">
