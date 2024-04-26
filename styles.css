@@ -53,81 +53,92 @@ table {
 /* Variable Declaration */
 
 :root {
-    --white-accent: white;
-    --gray-accent: gray;
     --blue-accent: #318CE7;
 }
 
-/* Element Styling */
+/* Body, Header, and Grid Styling */
 
-body {
+body, button, input {
     font-size: 16px;
     font-family: Garamond, sans-serif;
+}
 
+body {
+    height: 100vh;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap: 2rem;
-    height: 100vh;
+    gap: 1rem;
 }
 
-#page-header {
+header {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+}
+
+header h1 {
     color: var(--blue-accent);
+    font-size: 3rem;
     font-weight: bold;
-    font-size: 4rem;
+}
+
+header #start-button {
+    padding: 0.75rem 1.5rem;
+    background-color: white;
+    border: 2px solid var(--blue-accent);
+    border-radius: 10px;
+    transition: 0.5s ease-in-out;
+}
+
+header #start-button:hover {
+    color: white;
+    background-color: var(--blue-accent);
+    cursor: pointer;
+}
+
+header #start-button:focus {
+   outline: none;
 }
 
 #game-display {
     font-size: 1.5rem;
 }
 
-.hidden {
+#game-display.hidden {
     display: none;
 }
 
 #board-grid {
     display: grid;
-    grid-template: repeat(3, minmax(150px, 1fr)) / repeat(3, minmax(150px, 1fr));
+    grid-template: repeat(3, 1fr) / repeat(3, 1fr);
 
-    background-color: var(--gray-accent);
+    width: 500px;
+    height: 500px;
+
+    background-color: gray;
     padding: 0.25rem;
     gap: 0.25rem;
 }
 
 #board-grid .board-tile {
-    background-color: var(--white-accent);
+    background-color: white;
     color: black;
     font-size: 6rem;
 
     display: flex;
     justify-content: center;
     align-items: center;
+    transition: 0.5s ease-in-out;
 }
 
-#board-grid .interactable:hover {
+#board-grid .board-tile.interactable:hover {
     background-color: var(--blue-accent);
-    transition: 0.5s;
+    cursor: pointer;
 }
 
-#start-button {
-    padding: 1rem 3rem;
-    background-color: var(--white-accent);
-    border: 2px solid var(--blue-accent);
-    border-radius: 10px;
-}
-
-#start-button:hover {
-    color: var(--white-accent);
-    background-color: var(--blue-accent);
-    transition: 0.5s;
-}
-
-#start-button:focus {
-   outline: none;
-}
-
-/* DIALOG / FORM STYLING */
+/* Dialog / Form Styling */
 
 dialog {
     background-color: whitesmoke;
@@ -136,66 +147,97 @@ dialog {
     border-radius: 10px;
 }
 
+dialog::backdrop {
+    backdrop-filter: blur(0.25rem);
+}
+
 #start-game-form {
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-    align-items: stretch;
-
-    width: 10vw;
-    min-height: 25vh;
-    padding: 2rem;
+    gap: 0.5rem;
+    padding: 1.5rem;
 } 
-
-#start-game-form, #submit-button {
-    font-weight: bold;
-}
 
 #start-game-form .form-row {
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    gap: 0.25rem;
 }
 
 #start-game-form #form-header {
-    align-self: center;
     font-size: 1.5rem;
+    font-weight: bold;
+    align-self: center;
+    margin-bottom: 0.5rem;
 }
 
-#start-game-form input {
-    margin-top: 0.25rem;
-    padding: 0.5rem 0.25rem;
-    border: 1px solid var(--white-accent);
+#start-game-form .form-row label {
+    font-weight: bold;
+}
+
+#start-game-form .form-row input {
+    padding: 0.5rem;
+    border: 1px solid transparent;
     border-radius: 5px;
 }
 
-#start-game-form input::placeholder {
+#start-game-form .form-row input::placeholder {
     color: gray;
-    font-size: 13.33px;
 }
 
-#start-game-form input:invalid {
-    outline: 0px;
+#start-game-form .form-row input:invalid {
     border: 1px solid red;
 }
 
-#start-game-form input:valid {
-    outline: 0px;
+#start-game-form .form-row input:valid {
     border: 1px solid green;
 }
 
-#start-game-form input:focus {
-    outline: 0px;
+#start-game-form .form-row input:focus {
+    outline: none;
     border: 1px solid var(--blue-accent);
 }
 
-#start-game-form #submit-button {
-    background-color: var(--blue-accent);
-    border: 0px;
-    border-radius: 10px;
+#start-game-form .form-row #submit-button {
     padding: 1rem 0;
+    margin-top: 0.5rem;
+    background-color: var(--blue-accent);
+    border: none;
+    border-radius: 10px;
+    transition: 0.5s ease-in-out;
 }
 
-#start-game-form #submit-button:focus {
+#start-game-form .form-row #submit-button:hover {
+    filter: brightness(0.8);
+    cursor: pointer;
+}
+
+#start-game-form .form-row #submit-button:focus {
     outline: 0px;
+}
+
+/* Media Queries */
+
+@media (max-width: 550px) {
+    header {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+    
+    header h1 {
+        color: var(--blue-accent);
+        font-size: 1.75rem;
+        font-weight: bold;
+    }
+    
+    header #start-button {
+        padding: 0.5rem 1rem;
+        font-size: 0.75rem;
+    }
+
+    #board-grid {
+        width: 300px;
+        height: 300px;
+    }
 }

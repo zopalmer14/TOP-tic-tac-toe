@@ -235,6 +235,9 @@ const gameInterface = function gameInterface() {
             gameController.addPlayer(event.target.playerOne.value, 'X');
             gameController.addPlayer(event.target.playerTwo.value, 'O');
 
+            // reset the form
+            start_game_form.reset();
+
             // start the game
             startGame();
         });
@@ -284,7 +287,7 @@ const gameInterface = function gameInterface() {
         const active_player = gameController.getActivePlayer();
         if (gameController.gameBoard.checkVictory(active_player)) {
             // update the display then remove the remaining eventListeners to disable the game
-            DOMController.updateDisplay(`Player ${active_player.getSymbol()} - That is ${active_player.getName()}, Wins!`);
+            DOMController.updateDisplay(`Player ${active_player.getSymbol()} - ${active_player.getName()}, Wins!`);
             handleVictory();
         } else if (gameController.gameBoard.checkFull()) {
             // update the display to indicate it is a tie
